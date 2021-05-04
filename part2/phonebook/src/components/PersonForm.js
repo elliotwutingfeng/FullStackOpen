@@ -15,16 +15,25 @@ const PersonForm = (props) => {
       number: props.newNumber,
     };
     if (!props.persons.map((person) => person.name).includes(props.newName)) {
-      personService.create(personObject).then((returnedPerson) => {
-        props.setPersons(props.persons.concat(returnedPerson));
-        props.setNewName("");
-        props.setNewNumber("");
-        // Message for Create
-        props.setErrorMessage([`Added ${returnedPerson.name}`, true]);
-        setTimeout(() => {
-          props.setErrorMessage([null, true]);
-        }, 5000);
-      });
+      personService
+        .create(personObject)
+        .then((returnedPerson) => {
+          props.setPersons(props.persons.concat(returnedPerson));
+          props.setNewName("");
+          props.setNewNumber("");
+          // Message for Create
+          props.setErrorMessage([`Added ${returnedPerson.name}`, true]);
+          setTimeout(() => {
+            props.setErrorMessage([null, true]);
+          }, 5000);
+        })
+        .catch((error) => {
+          // this is the way to access the error message
+          props.setErrorMessage([`${error.response.data.error}`, false]);
+          setTimeout(() => {
+            props.setErrorMessage([null, true]);
+          }, 5000);
+        });
     } else {
       if (
         window.confirm(
@@ -53,10 +62,13 @@ const PersonForm = (props) => {
             }, 5000);
           })
           .catch((error) => {
+            /*
             props.setErrorMessage([
               `Information of ${personObject.name} has already been removed from server`,
               false,
             ]);
+            */
+            props.setErrorMessage([`${error.response.data.error}`, false]);
             setTimeout(() => {
               props.setErrorMessage([null, true]);
             }, 5000);
