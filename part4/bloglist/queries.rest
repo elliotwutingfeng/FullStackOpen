@@ -2,7 +2,7 @@ POST http://localhost:3003/api/blogs HTTP/1.1
 content-type: application/json
 
 {
-  "title": "a title",
+  "title": "b title",
   "author": "the author",
   "url": "www.google.com.sg",
   "likes": 9000
