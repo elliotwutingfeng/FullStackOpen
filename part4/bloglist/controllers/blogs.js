@@ -24,4 +24,26 @@ blogsRouter.post('/', async (request, response) => {
   }
 })
 
+blogsRouter.delete('/:id', async (request, response) => {
+  await Blog.findByIdAndRemove(request.params.id)
+  response.status(204).end()
+})
+
+blogsRouter.put('/:id', async (request, response) => {
+  // If 'likes' property is missing, set it to 0
+  const { body } = request
+  if (!Object.prototype.hasOwnProperty.call(body, 'likes')) {
+    body.likes = 0
+  }
+
+  // If either 'title' or 'url' properties are missing, respond with 400 Bad Request
+  if (!Object.prototype.hasOwnProperty.call(body, 'title')
+    || !Object.prototype.hasOwnProperty.call(body, 'url')) {
+    response.status(400).end()
+  } else {
+    await Blog.findByIdAndUpdate(request.params.id, body, { new: true })
+    response.status(204).end()
+  }
+})
+
 module.exports = blogsRouter
