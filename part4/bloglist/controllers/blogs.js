@@ -1,6 +1,5 @@
-const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
-const User = require('../models/user')
+const middleware = require('../utils/middleware')
 const Blog = require('../models/blog')
 
 blogsRouter.get('/', async (request, response) => {
@@ -8,11 +7,8 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
-blogsRouter.post('/', async (request, response) => {
-  const { body, token } = request
-  const decodedToken = jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) { return response.status(401).json({ error: 'token missing or invalid' }) }
-  const user = await User.findById(decodedToken.id)
+blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
+  const { body, user } = request
 
   // If 'likes' property is missing, set it to 0
   if (!Object.prototype.hasOwnProperty.call(body, 'likes')) {
@@ -33,14 +29,12 @@ blogsRouter.post('/', async (request, response) => {
   }
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
-  const { body, token, params } = request
-  const decodedToken = jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) { return response.status(401).json({ error: 'token missing or invalid' }) }
-  const user = await User.findById(decodedToken.id)
+blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
+  const { user, params } = request
+
   // Check if blog belongs to current user
   const blog = await Blog.findById(params.id)
-  if (blog.user.toString() === decodedToken.id.toString()) {
+  if (blog.user.toString() === user.id.toString()) {
     await Blog.findByIdAndRemove(params.id)
     return response.status(204).end()
   }
