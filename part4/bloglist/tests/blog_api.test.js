@@ -11,8 +11,27 @@ const User = require('../models/user')
 const Blog = require('../models/blog')
 
 beforeEach(async () => {
+  // Create one user
+  await User.deleteMany({})
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = new User({
+    username: 'root', name: 'The Root User', passwordHash, blogs: [],
+  })
+  // Create 2 blogs
   await Blog.deleteMany({})
-  await Blog.insertMany(helper.initialBlogs)
+  const { initialBlogs } = helper
+  // Match user to blog
+  initialBlogs.forEach((blog) => { blog.user = user._id })
+  await Blog.insertMany(initialBlogs)
+
+  // Match blogs to user
+  const blogs = await helper.blogsInDb()
+
+  blogs.forEach(async (blog) => {
+    user.blogs = user.blogs.concat(blog.id)
+  })
+
+  await user.save()
 })
 describe('GET', () => {
   test('4.8 blog posts are returned as json', async () => {
@@ -115,15 +134,6 @@ describe('PUT', () => {
 })
 // User API
 describe('Adding users when there is initially one user in db', () => {
-  beforeEach(async () => {
-    await User.deleteMany({})
-
-    const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'root', name: 'The Root User', passwordHash })
-
-    await user.save()
-  })
-
   test('4.15 creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb()
 
