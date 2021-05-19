@@ -2,9 +2,9 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 
 const initialBlogs = [{
-  title: 'a title', author: 'the author', url: 'www.google.com.sg', likes: 9000,
+  title: 'a title', author: 'The Root User', url: 'www.google.com.sg', likes: 9000,
 }, {
-  title: 'b title', author: 'the author', url: 'www.google.com.sg', likes: 9000,
+  title: 'b title', author: 'The Root User', url: 'www.google.com.sg', likes: 9000,
 }]
 
 const blogsInDb = async () => {

@@ -6,7 +6,8 @@ const bcrypt = require('bcrypt')
 const helper = require('./test_helper')
 const app = require('../app')
 
-const api = supertest(app)
+const api = supertest.agent(app)
+const apiWithoutToken = supertest(app)
 const User = require('../models/user')
 const Blog = require('../models/blog')
 
@@ -26,12 +27,13 @@ beforeEach(async () => {
 
   // Match blogs to user
   const blogs = await helper.blogsInDb()
-
-  blogs.forEach(async (blog) => {
-    user.blogs = user.blogs.concat(blog.id)
-  })
+  user.blogs = blogs.map((blog) => blog.id)
 
   await user.save()
+
+  // Login as root
+  const response = await api.post('/api/login').send({ username: 'root', password: 'sekret' })
+  api.auth(response.body.token, { type: 'bearer' })
 })
 describe('GET', () => {
   test('4.8 blog posts are returned as json', async () => {
@@ -58,13 +60,13 @@ describe('GET', () => {
 describe('POST', () => {
   test('4.10 making an HTTP POST request successfully creates a new blog post', async () => {
     const newBlog = {
-      title: 'c title', author: 'the author', url: 'www.google.com.sg', likes: 9000,
+      title: 'c title', author: 'The Root User', url: 'www.google.com.sg', likes: 9000,
     }
     await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
     const response = await api
       .get('/api/blogs')
     expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
-    const contents = response.body.map(({ id, ...r }) => r)
+    const contents = response.body.map(({ id, user, ...r }) => r)
     expect(contents).toContainEqual(newBlog)
   })
 
@@ -73,12 +75,12 @@ describe('POST', () => {
       const newBlog = {
         title: 'c title', author: 'the author', url: 'www.google.com.sg',
       }
-      const res = await api.post('/api/blogs')
+      const response = await api.post('/api/blogs')
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
-      expect(res.body.likes).toBe(0)
+      expect(response.body.likes).toBe(0)
     })
 
   test('4.12 If either title or url properties are missing, respond with 400 Bad Request',
@@ -128,7 +130,7 @@ describe('PUT', () => {
     expect(afterUpdateResponse.body).toHaveLength(helper.initialBlogs.length)
     const updatedContents = afterUpdateResponse.body
       .filter((r) => r.id === idToUpdate)
-      .map(({ id, ...r }) => r)
+      .map(({ id, user, ...r }) => r)
     expect(updatedContents).toContainEqual(newBlog)
   })
 })
@@ -211,7 +213,18 @@ describe('Adding users when there is initially one user in db', () => {
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
   })
 })
-
+// Adding a blog fails with the proper status code 401 Unauthorized if a token is not provided
+describe('Adding a blog without token', () => {
+  test('4.23 if a token is not provided when adding a blog, return error code 401', async () => {
+    const newBlog = {
+      title: 'c title', author: 'The Root User', url: 'www.google.com.sg', likes: 9000,
+    }
+    await apiWithoutToken.post('/api/blogs').send(newBlog).expect(401)
+    const response = await api
+      .get('/api/blogs')
+    expect(response.body).toHaveLength(helper.initialBlogs.length)
+  })
+})
 afterAll(() => {
   mongoose.connection.close()
 })
