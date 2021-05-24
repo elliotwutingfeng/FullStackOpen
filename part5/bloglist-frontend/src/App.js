@@ -17,13 +17,18 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  useEffect(() => {
+  const refreshBlogs = async () => {
+    const blogs = await blogService.getAll()
+    blogs.sort((a,b) => b.likes-a.likes)
+    setBlogs(blogs)
+  }
+
+  useEffect(async () => {
     // Set Token and Fetch blogs only when user credentials are set
     if(user !== null){
       blogService.setToken(user.token)
-      blogService.getAll().then(blogs =>
-        setBlogs( blogs )
-      )}
+      refreshBlogs()
+    }
   }, [user])
 
   useEffect(() => {
@@ -72,20 +77,26 @@ const App = () => {
     await blogService.create({
       title, author, url,
     })
-    const blogs = await blogService.getAll()
     blogFormRef.current.toggleVisibility()
-    setBlogs(blogs)
+    refreshBlogs()
   }
+  const updateBlog = async (id,user,title,author,url,likes) => {
+    await blogService.update(id,{
+      user, title, author, url, likes
+    })
+    refreshBlogs()
+  }
+
   const blogList = () => <>
     <h2>blogs</h2>
     <div style={{ marginBottom: '0.5em' }}>
       <form onSubmit={handleLogout}>{user.name} logged in<button type="submit">logout</button></form>
     </div>
-    <Togglable buttonLabel="new blog" ref={blogFormRef}>
+    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
       <BlogForm addBlog={addBlog} setErrorMessage={setErrorMessage} />
     </Togglable>
     {blogs.map(blog =>
-      <Blog key={blog.id} blog={blog} />
+      <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
     )}</>
 
   return (
