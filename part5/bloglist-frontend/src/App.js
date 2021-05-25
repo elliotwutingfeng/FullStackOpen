@@ -86,6 +86,10 @@ const App = () => {
     })
     refreshBlogs()
   }
+  const deleteBlog = async (id) => {
+    await blogService.remove(id)
+    refreshBlogs()
+  }
 
   const blogList = () => <>
     <h2>blogs</h2>
@@ -96,7 +100,7 @@ const App = () => {
       <BlogForm addBlog={addBlog} setErrorMessage={setErrorMessage} />
     </Togglable>
     {blogs.map(blog =>
-      <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+      <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} />
     )}</>
 
   return (
