@@ -73,16 +73,16 @@ const App = () => {
     }, 3000)
   }
 
-  const addBlog = async (title,author,url) => {
+  const addBlog = async ({ title,author,url }) => {
     await blogService.create({
       title, author, url,
     })
     blogFormRef.current.toggleVisibility()
     refreshBlogs()
   }
-  const updateBlog = async (id,user,title,author,url,likes) => {
+  const incrementLike = async (id,user,title,author,url,likes) => {
     await blogService.update(id,{
-      user, title, author, url, likes
+      user, title, author, url, likes:likes+1
     })
     refreshBlogs()
   }
@@ -100,7 +100,7 @@ const App = () => {
       <BlogForm addBlog={addBlog} setErrorMessage={setErrorMessage} />
     </Togglable>
     {blogs.map(blog =>
-      <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} />
+      <Blog key={blog.id} blog={blog} incrementLike={incrementLike} deleteBlog={deleteBlog} />
     )}</>
 
   return (
