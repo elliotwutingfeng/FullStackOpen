@@ -19,13 +19,13 @@ const Blog = ({ blog,incrementLike, deleteBlog }) => {
   }
   const details = () => <>
     <div>{blog.url}</div>
-    <div>likes {blog.likes} <button onClick={() => incrementLike(blog.id,blog.user.id,blog.title,blog.author,blog.url,blog.likes)}>like</button></div>
+    <div>likes {blog.likes} <button id='like-button' onClick={() => incrementLike(blog.id,blog.user.id,blog.title,blog.author,blog.url,blog.likes)}>like</button></div>
     <div>{blog.user.name}</div>
-    <div><button onClick={removeBlog}>remove</button></div>
+    <div><button id='remove-button' onClick={removeBlog}>remove</button></div>
   </>
   return <div style={blogStyle} className='blogContent'>
     <div>{blog.title} {blog.author}
-      <button onClick={toggleShowDetails}>{showDetails ? 'hide':'view'}</button>
+      <button id='show-details-button' onClick={toggleShowDetails}>{showDetails ? 'hide':'view'}</button>
     </div>
     {showDetails && details()}
   </div>

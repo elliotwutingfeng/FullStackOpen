@@ -87,14 +87,22 @@ const App = () => {
     refreshBlogs()
   }
   const deleteBlog = async (id) => {
-    await blogService.remove(id)
+    try{
+      await blogService.remove(id)
+    }
+    catch(exception){
+      setErrorMessage({ message:'Unauthorized user',success:false })
+      setTimeout(() => {
+        setErrorMessage({ message:null,success:true })
+      }, 3000)
+    }
     refreshBlogs()
   }
 
   const blogList = () => <>
     <h2>blogs</h2>
     <div style={{ marginBottom: '0.5em' }}>
-      <form onSubmit={handleLogout}>{user.name} logged in<button type="submit">logout</button></form>
+      <form onSubmit={handleLogout}>{user.name} logged in<button id='logout-button' type="submit">logout</button></form>
     </div>
     <Togglable buttonLabel="create new blog" ref={blogFormRef}>
       <BlogForm addBlog={addBlog} setErrorMessage={setErrorMessage} />
@@ -105,7 +113,7 @@ const App = () => {
 
   return (
     <>
-      {errorMessage.message !== null ? <font color={errorMessage.success ?'green':'red'}>{errorMessage.message}</font>: null}
+      {errorMessage.message !== null ? <font className="error" color={errorMessage.success ?'green':'red'}>{errorMessage.message}</font>: null}
       { user === null ? <LoginForm
         username={username}
         password={password}
