@@ -107,6 +107,7 @@ const App = () => {
     <Togglable buttonLabel="create new blog" ref={blogFormRef}>
       <BlogForm addBlog={addBlog} setErrorMessage={setErrorMessage} />
     </Togglable>
+
     {blogs.map(blog =>
       <Blog key={blog.id} blog={blog} incrementLike={incrementLike} deleteBlog={deleteBlog} />
     )}</>

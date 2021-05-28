@@ -103,5 +103,27 @@ describe('Blog app', function() {
       cy.get('#remove-button').click()
       cy.get('.error').should('contain', 'Unauthorized user')
     })
+
+    it('Blogs are ordered according to likes with the blog with the most likes being first',function(){
+      // Create 3 blogs
+      for(let idx=1;idx<4;idx++){
+        cy.get('#show-button').click()
+        cy.get('#title').type(`The Blog Title ${idx}`)
+        cy.get('#author').type('The Blog Author')
+        cy.get('#url').type(`The Blog URL ${idx}`)
+        cy.get('#create-button').click()
+      }
+      // Give them 1,2,3 likes respectively
+      for(let idx=1;idx<4;idx++){
+        cy.contains(`The Blog Title ${idx}`).parent().find('#show-details-button').click()
+        for(let x=1;x<idx+1;x++){
+          cy.contains(`The Blog Title ${idx}`).parent().find('#like-button').click()
+          cy.contains(`likes ${x}`)}
+      }
+      // Check that the order is ['The Blog Title 3','The Blog Title 2','The Blog Title 1']
+      cy.get('.likes').eq(0).should('contain','likes 3')
+      cy.get('.likes').eq(1).should('contain','likes 2')
+      cy.get('.likes').eq(2).should('contain','likes 1')
+    })
   })
 })
