@@ -28,9 +28,7 @@ export const create = (anecdote) => {  return {
 }
 const initialState = anecdotesAtStart.map(asObject)
 
-const reducer = (state = initialState, action) => {
-  console.log('state now: ', state)
-  console.log('action', action)
+const anecdoteReducer = (state = initialState, action) => {
   switch(action.type){
     case 'VOTE':
       return [...state.map(item=>{if(item.id === action.data.id){
@@ -41,10 +39,10 @@ const reducer = (state = initialState, action) => {
     else{return item}})].sort((a,b)=>b.votes-a.votes)
     case 'CREATE':
       return state.concat(action.data).sort((a,b)=>b.votes-a.votes)
-      default:
+    default:
       return state.sort((a,b)=>b.votes-a.votes)
   }
 
 }
 
-export default reducer
+export default anecdoteReducer
