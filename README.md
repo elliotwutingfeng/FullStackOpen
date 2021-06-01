@@ -14,7 +14,7 @@ This repository documents my attempt to learn React, Redux, Node.js, MongoDB, Gr
 - [x] 3.1 to 3.22 - Programming a server with NodeJS and Express
 - [x] 4.1 to 4.22 - Testing Express servers, user administration
 - [x] 5.1 to 5.22 - Testing React apps
-- [ ] 6.1 to 6.21 - State management with Redux
+- [x] 6.1 to 6.21 - State management with Redux
 - [ ] 7.1 to 7.21 - React router, custom hooks, styling app with CSS and webpack
 - [ ] 8.1 to 8.26 - GraphQL
 - [ ] 9.1 to 9.27 - Typescript
