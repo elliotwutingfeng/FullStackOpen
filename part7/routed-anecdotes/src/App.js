@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Switch, Route, Link, useRouteMatch,
+  Switch, Route, Link, useRouteMatch, useHistory,
 } from 'react-router-dom';
 
 const Menu = () => {
@@ -77,7 +77,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('');
   const [author, setAuthor] = useState('');
   const [info, setInfo] = useState('');
-
+  const history = useHistory()
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
@@ -86,6 +86,7 @@ const CreateNew = (props) => {
       info,
       votes: 0,
     });
+    history.push('/')
   };
 
   return (
@@ -133,6 +134,8 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0);
     setAnecdotes(anecdotes.concat(anecdote));
+    setNotification(`a new anecdote ${anecdote.content} created!`)
+    setTimeout(()=>setNotification(''),10000)
   };
 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
@@ -150,12 +153,13 @@ const App = () => {
 
   const match = useRouteMatch('/anecdotes/:id');
   const anecdote = match
-    ? anecdotes.find((item) => item.id === match.params.id) : null;
+    ? anecdoteById(match.params.id) : null;
 
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      {notification}
       <Switch>
         <Route path="/about">
           <About />
