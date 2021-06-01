@@ -1,12 +1,11 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { filterAnecdotes } from '../reducers/filterReducer'
 
-const Filter = () => {
-  const dispatch = useDispatch()
+const Filter = (props) => {
   const handleChange = (event) => {
     const filter_keyword = event.target.value
-    dispatch(filterAnecdotes(filter_keyword))
+    props.filterAnecdotes(filter_keyword)
   }
   const style = {
     marginBottom: 10
@@ -18,5 +17,5 @@ const Filter = () => {
     </div>
   )
 }
-
-export default Filter
+const mapDispatchToProps = {  filterAnecdotes }
+export default connect(null,mapDispatchToProps)(Filter)
