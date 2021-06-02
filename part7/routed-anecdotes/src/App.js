@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Switch, Route, Link, useRouteMatch, useHistory,
 } from 'react-router-dom';
+import {useField} from './hooks';
 
 const Menu = () => {
   const padding = {
@@ -22,8 +23,18 @@ const Anecdote = ({ anecdote }) => (
     <h2>
       {anecdote.content}
     </h2>
-    <p>has {anecdote.votes} votes</p>
-    <p>for more info see <a href={anecdote.info}>{anecdote.info}</a></p>
+    <p>
+      has
+      {' '}
+      {anecdote.votes}
+      {' '}
+      votes
+    </p>
+    <p>
+      for more info see
+      {' '}
+      <a href={anecdote.info}>{anecdote.info}</a>
+    </p>
   </div>
 );
 
@@ -74,20 +85,32 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('');
-  const [author, setAuthor] = useState('');
-  const [info, setInfo] = useState('');
-  const history = useHistory()
+  const content = useField('content');
+  const author = useField('author');
+  const info = useField('info');
+
+  const history = useHistory();
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0,
     });
-    history.push('/')
+    history.push('/');
   };
+
+  function resetForm() {
+    content.reset()
+    author.reset()
+    info.reset()
+  }
+  function fieldProps(field) {
+    // Returns fieldProps without the 'reset' attribute
+    const {reset,...fieldprops} = field
+    return fieldprops
+  }
 
   return (
     <div>
@@ -95,17 +118,17 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name="content" value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...fieldProps(content)} />
         </div>
         <div>
           author
-          <input name="author" value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...fieldProps(author)} />
         </div>
         <div>
           url for more info
-          <input name="info" value={info} onChange={(e) => setInfo(e.target.value)} />
+          <input {...fieldProps(info)} />
         </div>
-        <button>create</button>
+        <button type='submit'>create</button><button type='button' onClick={resetForm}>reset</button>
       </form>
     </div>
   );
@@ -134,8 +157,8 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0);
     setAnecdotes(anecdotes.concat(anecdote));
-    setNotification(`a new anecdote ${anecdote.content} created!`)
-    setTimeout(()=>setNotification(''),10000)
+    setNotification(`a new anecdote ${anecdote.content} created!`);
+    setTimeout(() => setNotification(''), 10000);
   };
 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
