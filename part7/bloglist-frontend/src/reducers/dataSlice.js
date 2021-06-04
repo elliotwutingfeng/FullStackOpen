@@ -6,7 +6,9 @@ export const dataSlice = createSlice({
     username: '',
     password: '',
     user:null,
+    usersById:[],
     blogs:[],
+    blogsByUserId:{},
     errorMessage:{ message:null,success:false },
     title:'',
     author:'',
@@ -24,6 +26,15 @@ export const dataSlice = createSlice({
     },
     setBlogs: (state,action) => {
       state.blogs = action.payload
+      state.blogsByUserId = {}
+      state.usersById = {}
+      for(const blog of state.blogs){
+        if(!Object.keys(state.blogsByUserId).includes(blog.user.id)){
+          state.blogsByUserId[blog.user.id] = []
+          state.usersById[blog.user.id] = blog.user
+        }
+        state.blogsByUserId[blog.user.id].push(blog)
+      }
     },
     setErrorMessage: (state,action) => {
       state.errorMessage = action.payload

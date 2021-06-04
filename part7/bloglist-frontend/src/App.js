@@ -8,6 +8,7 @@ import loginService from './services/login'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { setUsername, setPassword ,setUser,setBlogs,setErrorMessage } from './reducers/dataSlice'
+import Users from './components/Users'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -106,6 +107,7 @@ const App = () => {
     <div style={{ marginBottom: '0.5em' }}>
       <form onSubmit={handleLogout}>{user.name} logged in<button id='logout-button' type="submit">logout</button></form>
     </div>
+    <Users />
     <Togglable buttonLabel="create new blog" ref={blogFormRef}>
       <BlogForm addBlog={addBlog} />
     </Togglable>
