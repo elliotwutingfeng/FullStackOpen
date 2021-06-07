@@ -4,7 +4,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { setUsername, setPassword ,setUser,setBlogs,setErrorMessage } from './reducers/dataSlice'
+import { setUsername, setPassword ,setUser,setErrorMessage } from './reducers/dataSlice'
 import BlogList from './components/BlogList'
 import MainHeader from './components/MainHeader'
 
@@ -12,9 +12,12 @@ import Users from './components/Users'
 
 import {
   BrowserRouter as Router,
-  Route, Switch,// Link,
+  Route, Switch,
 } from 'react-router-dom'
-import Individual from './components/Individual'
+import IndividualUser from './components/IndividualUser'
+import IndividualBlog from './components/IndividualBlog'
+
+import { refreshBlogs } from './utils'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -25,17 +28,11 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  const refreshBlogs = async () => {
-    const blogs = await blogService.getAll()
-    blogs.sort((a,b) => b.likes-a.likes)
-    dispatch(setBlogs(blogs))
-  }
-
   useEffect(async () => {
     // Set Token and Fetch blogs only when user credentials are set
     if(user !== null){
       blogService.setToken(user.token)
-      refreshBlogs()
+      refreshBlogs(dispatch)
     }
   }, [user])
 
@@ -94,7 +91,8 @@ const App = () => {
         handleSubmit={handleLogin}
       />:<><MainHeader handleLogout={handleLogout} user={user} />
         <Switch>
-          <Route path='/users/:useridInView'><Individual /></Route>
+          <Route path='/blogs/:blogidInView'><IndividualBlog /></Route>
+          <Route path='/users/:useridInView'><IndividualUser /></Route>
           <Route path='/users'><Users /></Route>
           <Route path='/'><BlogList blogFormRef={blogFormRef} /></Route>
         </Switch>

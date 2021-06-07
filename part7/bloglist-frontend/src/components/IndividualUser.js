@@ -2,10 +2,10 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 
-const Individual = () => {
+const IndividualUser = () => {
   const blogsByUserId = useSelector(state => state.data.blogsByUserId)
   const usersById = useSelector(state => state.data.usersById)
-  const useridInView=useParams().useridInView
+  const useridInView = useParams().useridInView
 
   return usersById[useridInView] ? <>
     <h2>{usersById[useridInView].name}</h2>
@@ -15,4 +15,4 @@ const Individual = () => {
     </ul>
   </>:null
 }
-export default Individual
+export default IndividualUser

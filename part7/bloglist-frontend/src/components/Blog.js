@@ -1,5 +1,29 @@
 import React, { useState } from 'react'
-const Blog = ({ blog,incrementLike, deleteBlog }) => {
+import blogService from '../services/blogs'
+import { refreshBlogs } from '../utils'
+import { setErrorMessage } from '../reducers/dataSlice'
+import { useDispatch } from 'react-redux'
+const Blog = ({ blog }) => {
+  const dispatch = useDispatch()
+  const incrementLike = async (id,user,title,author,url,likes) => {
+    await blogService.update(id,{
+      user, title, author, url, likes:likes+1
+    })
+    refreshBlogs(dispatch)
+  }
+  const deleteBlog = async (id) => {
+    try{
+      await blogService.remove(id)
+    }
+    catch(exception){
+      dispatch(setErrorMessage({ message:'Unauthorized user',success:false }))
+      setTimeout(() => {
+        dispatch(setErrorMessage({ message:null,success:true }))
+      }, 3000)
+    }
+    refreshBlogs(dispatch)
+  }
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
