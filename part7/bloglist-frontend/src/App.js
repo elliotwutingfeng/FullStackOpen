@@ -8,6 +8,14 @@ import { setUsername, setPassword ,setUser,setBlogs,setErrorMessage } from './re
 import BlogList from './components/BlogList'
 import MainHeader from './components/MainHeader'
 
+import Users from './components/Users'
+
+import {
+  BrowserRouter as Router,
+  Route, Switch,// Link,
+} from 'react-router-dom'
+import Individual from './components/Individual'
+
 const App = () => {
   const dispatch = useDispatch()
   const username = useSelector(state => state.data.username)
@@ -76,7 +84,7 @@ const App = () => {
 
 
   return (
-    <>
+    <Router>
       {errorMessage.message !== null ? <font className="error" color={errorMessage.success ?'green':'red'}>{errorMessage.message}</font>: null}
       { user === null ? <LoginForm
         username={username}
@@ -84,8 +92,14 @@ const App = () => {
         handleUsernameChange={({ target }) => dispatch(setUsername(target.value))}
         handlePasswordChange={({ target }) => dispatch(setPassword(target.value))}
         handleSubmit={handleLogin}
-      />:<><MainHeader handleLogout={handleLogout} user={user} /><BlogList blogFormRef={blogFormRef} /></>}
-    </>
+      />:<><MainHeader handleLogout={handleLogout} user={user} />
+        <Switch>
+          <Route path='/users/:useridInView'><Individual /></Route>
+          <Route path='/users'><Users /></Route>
+          <Route path='/'><BlogList blogFormRef={blogFormRef} /></Route>
+        </Switch>
+      </>}
+    </Router>
   )
 }
 

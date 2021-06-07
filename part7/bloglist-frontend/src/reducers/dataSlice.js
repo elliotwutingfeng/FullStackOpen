@@ -12,8 +12,7 @@ export const dataSlice = createSlice({
     errorMessage:{ message:null,success:false },
     title:'',
     author:'',
-    url:'',
-    currentUserId:'60b9e3abc2403351c7ade0d5',
+    url:''
   },
   reducers: {
     setUsername: (state,action) => {
