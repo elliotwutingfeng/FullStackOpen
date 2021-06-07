@@ -13,6 +13,7 @@ export const dataSlice = createSlice({
     title:'',
     author:'',
     url:'',
+    currentUserId:'60b9e3abc2403351c7ade0d5',
   },
   reducers: {
     setUsername: (state,action) => {
