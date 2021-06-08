@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import blogService from '../services/blogs'
 import { refreshBlogs } from '../utils'
+import { Button, TextField } from '@material-ui/core'
 
 const IndividualBlog = () => {
+  const [comment,setComment] = useState('')
   const dispatch = useDispatch()
   const blogidInView = useParams().blogidInView
   const blog = useSelector(state => state.data.blogs.find(blog => blog.id === blogidInView))
@@ -13,6 +15,14 @@ const IndividualBlog = () => {
     await blogService.update(id,{
       user, title, author, url, likes:likes+1
     })
+    refreshBlogs(dispatch)
+  }
+
+  const addComment = async (id,comment) => {
+    await blogService.comment(id,{
+      comment
+    })
+    setComment('')
     refreshBlogs(dispatch)
   }
 
@@ -33,6 +43,10 @@ const IndividualBlog = () => {
     <div className='likes'>likes {blog.likes} <button id='like-button' onClick={() => incrementLike(blog.id,blog.user.id,blog.title,blog.author,blog.url,blog.likes)}>like</button></div>
     <div>added by {blog.user.name}</div>
     <h2>comments</h2>
+    <form noValidate autoComplete="off">
+      <TextField label="" variant="outlined" onChange={(event) => setComment(event.target.value)} value={comment} />
+      <Button onClick={() => {addComment(blog.id,comment)}}>Add Comment</Button>
+    </form>
     <ul>
       {blog.comments.map((comment,idx) => <li key={idx}>{comment}</li>)}
     </ul>
