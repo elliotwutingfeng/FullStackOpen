@@ -1,4 +1,5 @@
 // eslint-disable-next-line no-unused-vars
+import { Button } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { useState, useImperativeHandle } from 'react'
 
@@ -17,11 +18,11 @@ const Togglable = React.forwardRef((props, ref) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button id='show-button' onClick={toggleVisibility}>{props.buttonLabel}</button>
+        <Button id='show-button' color="inherit" onClick={toggleVisibility}>{props.buttonLabel}</Button>
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <button id='cancel-button' onClick={toggleVisibility}>cancel</button>
+        <Button id='cancel-button' color="inherit" onClick={toggleVisibility}>cancel</Button>
       </div>
     </div>
   )

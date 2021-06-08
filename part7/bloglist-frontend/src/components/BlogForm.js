@@ -1,3 +1,4 @@
+import { Button } from '@material-ui/core'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setErrorMessage ,setTitle,setAuthor,setURL } from '../reducers/dataSlice'
@@ -41,7 +42,7 @@ const BlogForm = ({ addBlog }) => {
         <div>url:
           <input id='url' type="text" value={url} name="URL" onChange={({ target }) => dispatch(setURL(target.value))} />
         </div>
-        <button id='create-button' type="submit">create</button>
+        <Button id='create-button' color="inherit" type="submit">create</Button>
       </form>
     </div>
   </>}

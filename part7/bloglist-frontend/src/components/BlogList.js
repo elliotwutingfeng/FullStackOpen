@@ -9,6 +9,7 @@ import { refreshBlogs } from '../utils'
 import {
   Link,
 } from 'react-router-dom'
+import { Paper, Table, TableBody, TableCell, TableContainer, TableRow } from '@material-ui/core'
 
 const BlogList = ({ blogFormRef }) => {
   const dispatch = useDispatch()
@@ -22,26 +23,25 @@ const BlogList = ({ blogFormRef }) => {
     refreshBlogs(dispatch)
   }
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
   return <>
+    <h2>blog app</h2>
     <Togglable buttonLabel="create new blog" ref={blogFormRef}>
       <BlogForm addBlog={addBlog} />
     </Togglable>
 
-    {blogs.map(blog =>
-
-      <div key={blog.id} style={blogStyle}>
-        <Link to={'/blogs/'+blog.id}>{blog.title} {blog.author}</Link>
-      </div>
-
-    )}
+    <TableContainer component={Paper}>
+      <Table>
+        <TableBody>
+          {blogs.map(blog =>
+            <TableRow key={blog.id}>
+              <TableCell>
+                <Link to={'/blogs/'+blog.id}>{blog.title} {blog.author}</Link>
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
   </>
 }
 export default BlogList

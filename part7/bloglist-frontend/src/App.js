@@ -6,7 +6,7 @@ import loginService from './services/login'
 import { useSelector, useDispatch } from 'react-redux'
 import { setUsername, setPassword ,setUser,setErrorMessage } from './reducers/dataSlice'
 import BlogList from './components/BlogList'
-import MainHeader from './components/MainHeader'
+import Navbar from './components/Navbar'
 
 import Users from './components/Users'
 
@@ -19,6 +19,8 @@ import IndividualUser from './components/IndividualUser'
 import IndividualBlog from './components/IndividualBlog'
 
 import { refreshBlogs } from './utils'
+
+import Container from '@material-ui/core/Container'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -83,34 +85,35 @@ const App = () => {
 
 
   return (
-    <Router>
-      {errorMessage.message !== null ? <font className="error" color={errorMessage.success ?'green':'red'}>{errorMessage.message}</font>: null}
-      {user && <MainHeader handleLogout={handleLogout} user={user} />}
-      <Switch>
-        <Route path='/login'>{user ? <Redirect to="/" /> :
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => dispatch(setUsername(target.value))}
-            handlePasswordChange={({ target }) => dispatch(setPassword(target.value))}
-            handleSubmit={handleLogin}
-          />}
-        </Route>
-        <Route path='/blogs/:blogidInView'>
-          {user ?  <IndividualBlog />: <Redirect to="/login" />}
-        </Route>
-        <Route path='/users/:useridInView'>
-          {user ?  <IndividualUser />: <Redirect to="/login" />}
-        </Route>
-        <Route path='/users'>
-          {user ?  <Users />: <Redirect to="/login" />}
-        </Route>
-        <Route path='/'>
-          {user ?  <BlogList blogFormRef={blogFormRef} />: <Redirect to="/login" />}
-        </Route>
-      </Switch>
+    <Container>
+      <Router>
+        {errorMessage.message !== null ? <font className="error" color={errorMessage.success ?'green':'red'}>{errorMessage.message}</font>: null}
+        <Navbar handleLogout={handleLogout} user={user} />
+        <Switch>
+          <Route path='/login'>{user ? <Redirect to="/" /> :
+            <LoginForm
+              username={username}
+              password={password}
+              handleUsernameChange={({ target }) => dispatch(setUsername(target.value))}
+              handlePasswordChange={({ target }) => dispatch(setPassword(target.value))}
+              handleSubmit={handleLogin}
+            />}
+          </Route>
+          <Route path='/blogs/:blogidInView'>
+            {user ?  <IndividualBlog />: <Redirect to="/login" />}
+          </Route>
+          <Route path='/users/:useridInView'>
+            {user ?  <IndividualUser />: <Redirect to="/login" />}
+          </Route>
+          <Route path='/users'>
+            {user ?  <Users />: <Redirect to="/login" />}
+          </Route>
+          <Route path='/'>
+            {user ?  <BlogList blogFormRef={blogFormRef} />: <Redirect to="/login" />}
+          </Route>
+        </Switch>
 
-    </Router>
+      </Router></Container>
   )
 }
 

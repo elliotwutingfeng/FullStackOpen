@@ -1,3 +1,4 @@
+import { Button } from '@material-ui/core'
 import React from 'react'
 
 const LoginForm = ({ handleSubmit,username,password,handleUsernameChange,handlePasswordChange }) => <>
@@ -15,7 +16,7 @@ const LoginForm = ({ handleSubmit,username,password,handleUsernameChange,handleP
         onChange={handlePasswordChange}
       />
     </div>
-    <button id='login-button' type="submit">login</button>
+    <Button id='login-button' color="inherit" type="submit">login</Button>
   </form>
 
 </>
