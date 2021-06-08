@@ -38,7 +38,7 @@ const BlogList = ({ blogFormRef }) => {
     {blogs.map(blog =>
 
       <div key={blog.id} style={blogStyle}>
-        <Link to={blog.id}>{blog.title} {blog.author}</Link>
+        <Link to={'/blogs/'+blog.id}>{blog.title} {blog.author}</Link>
       </div>
 
     )}

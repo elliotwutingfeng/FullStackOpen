@@ -12,6 +12,7 @@ import Users from './components/Users'
 
 import {
   BrowserRouter as Router,
+  Redirect,
   Route, Switch,
 } from 'react-router-dom'
 import IndividualUser from './components/IndividualUser'
@@ -42,6 +43,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       dispatch(setUser(user))
+
     }  }, [])
 
   const handleLogin = async (event) => {
@@ -83,20 +85,31 @@ const App = () => {
   return (
     <Router>
       {errorMessage.message !== null ? <font className="error" color={errorMessage.success ?'green':'red'}>{errorMessage.message}</font>: null}
-      { user === null ? <LoginForm
-        username={username}
-        password={password}
-        handleUsernameChange={({ target }) => dispatch(setUsername(target.value))}
-        handlePasswordChange={({ target }) => dispatch(setPassword(target.value))}
-        handleSubmit={handleLogin}
-      />:<><MainHeader handleLogout={handleLogout} user={user} />
-        <Switch>
-          <Route path='/blogs/:blogidInView'><IndividualBlog /></Route>
-          <Route path='/users/:useridInView'><IndividualUser /></Route>
-          <Route path='/users'><Users /></Route>
-          <Route path='/'><BlogList blogFormRef={blogFormRef} /></Route>
-        </Switch>
-      </>}
+      {user && <MainHeader handleLogout={handleLogout} user={user} />}
+      <Switch>
+        <Route path='/login'>{user ? <Redirect to="/" /> :
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => dispatch(setUsername(target.value))}
+            handlePasswordChange={({ target }) => dispatch(setPassword(target.value))}
+            handleSubmit={handleLogin}
+          />}
+        </Route>
+        <Route path='/blogs/:blogidInView'>
+          {user ?  <IndividualBlog />: <Redirect to="/login" />}
+        </Route>
+        <Route path='/users/:useridInView'>
+          {user ?  <IndividualUser />: <Redirect to="/login" />}
+        </Route>
+        <Route path='/users'>
+          {user ?  <Users />: <Redirect to="/login" />}
+        </Route>
+        <Route path='/'>
+          {user ?  <BlogList blogFormRef={blogFormRef} />: <Redirect to="/login" />}
+        </Route>
+      </Switch>
+
     </Router>
   )
 }
