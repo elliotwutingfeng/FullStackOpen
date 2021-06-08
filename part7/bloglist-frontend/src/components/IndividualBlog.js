@@ -32,7 +32,12 @@ const IndividualBlog = () => {
     <div><a href={'//'+blog.url} target="_blank" rel="noreferrer">{blog.url}</a></div>
     <div className='likes'>likes {blog.likes} <button id='like-button' onClick={() => incrementLike(blog.id,blog.user.id,blog.title,blog.author,blog.url,blog.likes)}>like</button></div>
     <div>added by {blog.user.name}</div>
-  </div>:null}</>
+    <h2>comments</h2>
+    <ul>
+      {blog.comments.map((comment,idx) => <li key={idx}>{comment}</li>)}
+    </ul>
+  </div>:null}
+  </>
 }
 
 export default IndividualBlog

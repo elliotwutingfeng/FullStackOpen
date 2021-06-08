@@ -60,7 +60,7 @@ describe('GET', () => {
 describe('POST', () => {
   test('4.10 making an HTTP POST request successfully creates a new blog post', async () => {
     const newBlog = {
-      title: 'c title', author: 'The Root User', url: 'www.google.com.sg', likes: 9000,
+      title: 'c title', author: 'The Root User', url: 'www.google.com.sg', likes: 9000, comments: ['this is a comment', 'this is another comment'],
     }
     await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
     const response = await api
@@ -119,7 +119,7 @@ describe('PUT', () => {
   test('4.14 making an HTTP PUT request successfully updates the correct blog post', async () => {
     // Update first item and check that it has been updated successfully
     const newBlog = {
-      title: 'c title', author: 'the author', url: 'www.google.com.sg', likes: 2401,
+      title: 'c title', author: 'the author', url: 'www.google.com.sg', likes: 2401, comments: ['this is a comment', 'this is another comment'],
     }
     const beforeUpdateResponse = await api
       .get('/api/blogs')
