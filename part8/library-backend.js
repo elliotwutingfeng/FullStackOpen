@@ -91,6 +91,7 @@ const typeDefs = gql`
       published: Int!
       genres: [String!]!
     ): Book
+    editAuthor(name: String!, setBornTo: Int!): Author
   }
   type Query {
     bookCount: Int!
@@ -135,11 +136,24 @@ const resolvers = {
     addBook: (root, args) => {
       const book = { ...args, id: uuid() };
       if (!authors.map((e) => e.name).includes(book.author)) {
-        const author = { name: book.author, born: null, bookCount: 1 };
+        const author = {
+          name: book.author,
+          born: null,
+          bookCount: 1,
+          id: uuid(),
+        };
         authors = authors.concat(author);
       }
       books = books.concat(book);
       return book;
+    },
+    editAuthor: (root, args) => {
+      const idx = authors.findIndex((e) => e.name === args.name);
+      if (idx === -1) {
+        return null;
+      }
+      authors[idx] = { ...authors[idx], born: args.setBornTo };
+      return authors[idx];
     },
   },
 };
