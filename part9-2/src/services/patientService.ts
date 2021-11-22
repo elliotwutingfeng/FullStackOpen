@@ -1,5 +1,7 @@
-import patientsData from "../../data/patients.json";
-import { Patient } from "../types";
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import patientsData from "../../data/patients";
+import { Patient, NewPatient } from "../types";
+import { v1 as uuid } from "uuid";
 
 const getEntries = (): Omit<Patient, "ssn">[] => {
   return patientsData.map((patient: Patient) => {
@@ -7,12 +9,18 @@ const getEntries = (): Omit<Patient, "ssn">[] => {
       ssn: [,],
       ...patientWithoutSSN
     } = patient;
+
     return patientWithoutSSN;
   });
 };
 
-const addEntry = () => {
-  return null;
+const addEntry = (patient: NewPatient): Patient => {
+  const newPatient = {
+    id: uuid(),
+    ...patient,
+  };
+
+  return newPatient;
 };
 
 export default {
