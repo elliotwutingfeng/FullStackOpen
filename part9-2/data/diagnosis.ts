@@ -1,6 +1,6 @@
-import { Diagnose } from "../src/types";
+import { Diagnosis } from "../src/types";
 
-const diagnosesData: Diagnose[] = [
+const diagnosisData: Diagnosis[] = [
   {
     code: "M24.2",
     name: "Disorder of ligament",
@@ -81,4 +81,4 @@ const diagnosesData: Diagnose[] = [
     name: "Pneumonia due to coronavirus disease",
   },
 ];
-export default diagnosesData;
+export default diagnosisData;

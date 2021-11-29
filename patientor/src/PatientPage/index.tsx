@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Patient } from "../types";
 
 import { setPatient, useStateValue } from "../state";
@@ -8,7 +8,7 @@ import { apiBaseUrl } from "../constants";
 
 const PatientPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [{ patient }, dispatch] = useStateValue();
+  const [{ patient, diagnosis }, dispatch] = useStateValue();
   React.useEffect(() => {
     const fetchPatient = async () => {
       if (patient?.id !== id) {
@@ -22,6 +22,7 @@ const PatientPage = () => {
         }
       }
     };
+
     void fetchPatient();
   }, [dispatch]);
 
@@ -31,6 +32,20 @@ const PatientPage = () => {
       <p>Gender: {patient?.gender}</p>
       <p>Occupation: {patient?.occupation}</p>
       <p>SSN: {patient?.ssn}</p>
+      <h3>Entries</h3>
+      {patient?.entries.map((content, idx) => (
+        <Fragment key={idx}>
+          <p>Date: {content?.date}</p>
+          <p>Description: {content?.description}</p>
+          <ul>
+            {content?.diagnosisCodes?.map((code, idx) => (
+              <li key={idx}>
+                {code} {diagnosis[code]?.name}
+              </li>
+            ))}
+          </ul>
+        </Fragment>
+      ))}
     </div>
   );
 };
