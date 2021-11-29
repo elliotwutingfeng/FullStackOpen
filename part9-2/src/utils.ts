@@ -8,6 +8,7 @@ type Fields = {
   ssn: unknown;
   gender: unknown;
   occupation: unknown;
+  entries: unknown;
 };
 const toNewPatient = ({
   name,
@@ -15,6 +16,7 @@ const toNewPatient = ({
   ssn,
   gender,
   occupation,
+  entries,
 }: Fields): NewPatient => {
   const newEntry: NewPatient = {
     name: parseName(name),
@@ -22,6 +24,7 @@ const toNewPatient = ({
     ssn: parseSSN(ssn),
     gender: parseGender(gender),
     occupation: parseOccupation(occupation),
+    entries: parseEntries(entries),
   };
 
   return newEntry;
@@ -29,6 +32,10 @@ const toNewPatient = ({
 
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
+};
+
+const isArray = (arr: unknown): arr is object[] => {
+  return Array.isArray(arr);
 };
 
 const parseName = (name: unknown): string => {
@@ -64,6 +71,13 @@ const parseOccupation = (occupation: unknown): string => {
   }
 
   return occupation;
+};
+
+const parseEntries = (entries: unknown): object[] => {
+  if (!entries || !isArray(entries)) {
+    throw new Error("Incorrect or missing entries");
+  }
+  return entries;
 };
 
 const isGender = (param: any): param is Gender => {
